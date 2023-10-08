@@ -2,11 +2,8 @@ from CPU_Processes import Process
 import copy
 
 def PriorityP(pInfo):
-    if not pInfo.multi_check and len(pInfo.processes_list[0]) > 3:
-        pInfo.processes_list = [sublist[:4] for sublist in pInfo.processes_list]
-
     while pInfo.plist or pInfo.queue:
-        if not pInfo.multi_check and pInfo.plist:
+        if not pInfo.multi_check and not pInfo.multi_feedback_check and pInfo.plist:
             if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
                 pInfo.time = pInfo.plist[0][1]
                 pInfo.timestamps.append(pInfo.time)
@@ -29,14 +26,21 @@ def PriorityP(pInfo):
             pInfo.processes_list[int(integer_part) - 1].append(pInfo.time)
             pInfo.queue.remove(pInfo.min_process)
         pInfo.timestamps.append(pInfo.time)
+        if pInfo.multi_feedback_check:
+            pInfo.timestamps1.append(pInfo.time)
+            pInfo.timestamps2.append(pInfo.time)
+            pInfo.timestamps3.append(pInfo.time)
+            pInfo.orderOfProcesses1.append(" ")
+            pInfo.orderOfProcesses2.append(" ")
+            pInfo.orderOfProcesses3.append(pInfo.min_process[0])
         if pInfo.multi_check:
             print("IT IS MULTICHECK PRIORITYP")
             return
-
-    pInfo.displayGanttChart()
-    pInfo.calculateTable()
-    pInfo.displayTable()
-    pInfo.displayEfficiency()
+    if not pInfo.multi_feedback_check:
+        pInfo.displayGanttChart()
+        pInfo.calculateTable()
+        pInfo.displayTable()
+        pInfo.displayEfficiency()
 
 
 

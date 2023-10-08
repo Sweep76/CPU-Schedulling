@@ -2,40 +2,48 @@ from CPU_Processes import Process
 import copy
 
 def RoundRobin(pInfo):
-    # if the given processes contain the Priority or Level column, remove them as they are not needed in this algorithm.
-    if len(pInfo.processes_list[0]) > 3:
-        pInfo.processes_list = [sublist[:3] for sublist in pInfo.processes_list]
-
     while pInfo.plist or pInfo.queue:
-        if pInfo.plist:
-            if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
-                pInfo.time = pInfo.plist[0][1]
-                pInfo.timestamps.append(pInfo.time)
-                pInfo.orderOfProcesses.append('idle')
-            while True:
-                if pInfo.plist and pInfo.plist[0][1] <= pInfo.time:
-                    pInfo.queue.append(pInfo.plist[0])
-                    pInfo.plist.pop(0)
-                else:
-                    break
-        if pInfo.queue[0][2] > 0:
-            pInfo.queue.append(pInfo.queue[0])
-        pInfo.queue.pop(0)
+        if not pInfo.multi_feedback_check:
+            if pInfo.plist:
+                if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
+                    pInfo.time = pInfo.plist[0][1]
+                    pInfo.timestamps.append(pInfo.time)
+                    pInfo.orderOfProcesses.append('idle')
+                while True:
+                    if pInfo.plist and pInfo.plist[0][1] <= pInfo.time:
+                        pInfo.queue.append(pInfo.plist[0])
+                        pInfo.plist.pop(0)
+                    else:
+                        break
+            if pInfo.queue[0][2] > 0:
+                pInfo.queue.append(pInfo.queue[0])
+            pInfo.queue.pop(0)
         if pInfo.queue:
             pInfo.orderOfProcesses.append(pInfo.queue[0][0])
             if pInfo.queue[0][2] > pInfo.QT:
                 pInfo.queue[0][2] -= pInfo.QT
                 pInfo.time += pInfo.QT
+                if pInfo.multi_feedback_check:
+                    pInfo.queue.append(pInfo.queue[0])
             else:
                 pInfo.time += pInfo.queue[0][2]
                 pInfo.queue[0][2] = 0
                 integer_part = ''.join(char for char in pInfo.queue[0][0] if char.isdigit())
                 pInfo.processes_list[int(integer_part) - 1].append(pInfo.time)
             pInfo.timestamps.append(pInfo.time)
-    pInfo.displayGanttChart()
-    pInfo.calculateTable()
-    pInfo.displayTable()
-    pInfo.displayEfficiency()
+            if pInfo.multi_feedback_check:
+                pInfo.timestamps1.append(pInfo.time)
+                pInfo.timestamps2.append(pInfo.time)
+                pInfo.timestamps3.append(pInfo.time)
+                pInfo.orderOfProcesses1.append(" ")
+                pInfo.orderOfProcesses2.append(" ")
+                pInfo.orderOfProcesses3.append(pInfo.queue[0][0])
+                pInfo.queue.pop(0)
+    if not pInfo.multi_feedback_check:
+        pInfo.displayGanttChart()
+        pInfo.calculateTable()
+        pInfo.displayTable()
+        pInfo.displayEfficiency()
 
 
 if __name__ == "__main__":
