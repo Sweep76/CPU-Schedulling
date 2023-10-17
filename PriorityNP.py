@@ -2,6 +2,8 @@ from CPU_Processes import Process
 
 def PriorityNP(pInfo):
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         if not pInfo.multi_check and not pInfo.multi_feedback_check and pInfo.plist:
             if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
                 pInfo.time = pInfo.plist[0][1]
@@ -29,6 +31,7 @@ def PriorityNP(pInfo):
             pInfo.orderOfProcesses2.append(" ")
             pInfo.orderOfProcesses3.append(pInfo.min_process[0])
         if pInfo.multi_check:
+            print("MULTILEVEL QUEUE CHECK: PriorityNP")
             return
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -47,6 +50,8 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.multi_check = False
+    pInfo.trimProcessList()
 
     PriorityNP(pInfo)
 

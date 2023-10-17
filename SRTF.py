@@ -3,6 +3,8 @@ import copy
 
 def SRTF(pInfo):
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         # plist is in this condition so that if it is false, meaning plist is empty, the algo does not have to
         # check for newly arrived processes or idle time anymore
         if not pInfo.multi_check and not pInfo.multi_feedback_check and pInfo.plist:
@@ -19,7 +21,11 @@ def SRTF(pInfo):
         if not pInfo.multi_check:
             pInfo.min_process = min(pInfo.queue, key=lambda x: (x[2], x[1], x[0]))
         pInfo.orderOfProcesses.append(pInfo.min_process[0])
-        if pInfo.plist and pInfo.time + pInfo.min_process[2] > pInfo.plist[0][1]:
+        # the not pInfo.multi_feedback_check has to be there because if SRTF is used as an algo in MLFQ, there is a
+        # chance that level 3 will be executed and plist is not empty (it has not been emptied yet because of idle
+        # time), so if plist is not empty yet, SRTF will forever compare pInfo.min_process and pInfo.plist
+        # This only applies to preemptive algorithms
+        if not pInfo.multi_feedback_check and (pInfo.plist and pInfo.time + pInfo.min_process[2] > pInfo.plist[0][1]):
             pInfo.min_process[2] -= pInfo.plist[0][1] - pInfo.time
             pInfo.time = pInfo.plist[0][1]
         else:
@@ -36,7 +42,7 @@ def SRTF(pInfo):
             pInfo.orderOfProcesses2.append(" ")
             pInfo.orderOfProcesses3.append(pInfo.min_process[0])
         if pInfo.multi_check:
-            print("IT IS MULTICHECK SRTF")
+            print("MULTILEVEL QUEUE CHECK: SRTF")
             return
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -54,6 +60,8 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.multi_check = pInfo.prio_check = False
+    pInfo.trimProcessList()
 
     SRTF(pInfo)
 

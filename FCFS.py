@@ -5,6 +5,8 @@ def FCFS(pInfo):
     # originally, fcfs would not need pInfo.queue in the condition since if pInfo.plist is empty, pInfo.queue is also
     # empty, but if fcfs is chosen as algo3 in MLFQ, plist is already empty while the queue is still there.
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         if not pInfo.multi_check and not pInfo.multi_feedback_check:
             if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
                 pInfo.time = pInfo.plist[0][1]
@@ -31,7 +33,7 @@ def FCFS(pInfo):
             pInfo.orderOfProcesses2.append(" ")
             pInfo.orderOfProcesses3.append(pInfo.min_process[0])
         if pInfo.multi_check:
-            print("IT IS MULTICHECK FCFS")
+            print("MULTILEVEL QUEUE CHECK: FCFS")
             return
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -49,8 +51,11 @@ if __name__ == "__main__":
     #     ["P4", 3, 3],
     #     ["P5", 2, 5]
     # ]
+    pInfo.multi_check = pInfo.prio_check = False
+    pInfo.trimProcessList()
 
     FCFS(pInfo)
+
 
 
 

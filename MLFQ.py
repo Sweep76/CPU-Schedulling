@@ -6,7 +6,6 @@ from PriorityP import PriorityP
 from RoundRobin import RoundRobin
 from SRTF import SRTF
 from MLQ import MLQ
-import copy
 
 def MLFQ(pInfo):
 
@@ -48,6 +47,9 @@ def MLFQ(pInfo):
             pInfo.timestamps1.append(pInfo.time)
             pInfo.timestamps2.append(pInfo.time)
             pInfo.timestamps3.append(pInfo.time)
+        # since this is the first level, there is no need to always check for newly arrived processes.
+        # just put all the previously existing process in the first gantt chart then get the newly arrived ones after
+        # for time efficiency
         if pInfo.plist and pInfo.plist[0][1] <= pInfo.time:
             continue
         elif not pInfo.queue2 and not pInfo.queue3:
@@ -71,10 +73,16 @@ def MLFQ(pInfo):
             pInfo.timestamps1.append(pInfo.time)
             pInfo.timestamps2.append(pInfo.time)
             pInfo.timestamps3.append(pInfo.time)
+            # since this is the second level, you need to always check for newly arrived processes since you cannot
+            # directly put all existing processes in the second gantt chart if there are newly arrived processes.
             if pInfo.plist and pInfo.plist[0][1] <= pInfo.time:
                 break
         if (pInfo.plist and pInfo.plist[0][1] <= pInfo.time) or not pInfo.queue3:
             continue
+
+        # print()
+        # for i in pInfo.processes_list:
+        #     print(i)
 
         if pInfo.queue3:
             pInfo.queue = pInfo.queue3
@@ -107,6 +115,8 @@ def MLFQ(pInfo):
 if __name__ == "__main__":
     pInfo = Process("MLFQ")
     pInfo.QT = 2
+    # SET THE TIME SPLICE OF LEVELS 1 AND 2. TO SET THE ALGORITHM/S OF LEVEL 3, GO TO CPU_Processes.py AND CHANGE
+    # algo3 ON LINE 27
     pInfo.QT1 = 2
     pInfo.QT2 = 3
     # Customization
@@ -117,6 +127,7 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.trimProcessList()
 
     MLFQ(pInfo)
 

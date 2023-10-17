@@ -6,10 +6,9 @@ from PriorityP import PriorityP
 from SRTF import SRTF
 
 def MLQ(pInfo):
-    if not pInfo.prio_check:
-        pInfo.processes_list = [sublist[:4] for sublist in pInfo.processes_list]
-
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         if pInfo.plist and not pInfo.multi_feedback_check:
             if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
                 pInfo.time = pInfo.plist[0][1]
@@ -47,7 +46,8 @@ def MLQ(pInfo):
         pInfo.displayEfficiency()
 
 if __name__ == "__main__":
-    pInfo = Process("SRTF", "PriorityP", "FCFS")
+    # SET THE ALGORITHMS HERE. FIRST ALGORITHM CORRESPONDS TO LEVEL 1, SECOND ALGORITHM TO LEVEL 2, AND SO ON
+    pInfo = Process("PriorityNP", "SRTF", "FCFS")
     # Customization
     # pInfo.processes_list = [
     #     ["P1", 10, 5, 3],
@@ -56,6 +56,7 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.trimProcessList()
 
     MLQ(pInfo)
 

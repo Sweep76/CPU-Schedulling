@@ -3,6 +3,8 @@ import copy
 
 def RoundRobin(pInfo):
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         if not pInfo.multi_feedback_check:
             if pInfo.plist:
                 if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
@@ -48,7 +50,7 @@ def RoundRobin(pInfo):
 
 if __name__ == "__main__":
     pInfo = Process("Round-Robin")
-    pInfo.QT = 3
+    pInfo.QT = 2 # SET THE QUANTUM TIME HERE
     # Customization
     # pInfo.processes_list = [
     #     ["P1", 10, 5, 3],
@@ -57,6 +59,8 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.multi_check = pInfo.prio_check = False
+    pInfo.trimProcessList()
 
     RoundRobin(pInfo)
 

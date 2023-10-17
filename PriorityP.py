@@ -3,6 +3,8 @@ import copy
 
 def PriorityP(pInfo):
     while pInfo.plist or pInfo.queue:
+        if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
+            return
         if not pInfo.multi_check and not pInfo.multi_feedback_check and pInfo.plist:
             if not pInfo.queue and pInfo.plist[0][1] > pInfo.time:
                 pInfo.time = pInfo.plist[0][1]
@@ -17,7 +19,7 @@ def PriorityP(pInfo):
         if not pInfo.multi_check:
             pInfo.min_process = min(pInfo.queue, key=lambda x: (x[3], x[2], x[1], x[0]))
         pInfo.orderOfProcesses.append(pInfo.min_process[0])
-        if pInfo.plist and pInfo.time + pInfo.min_process[2] > pInfo.plist[0][1]:
+        if not pInfo.multi_feedback_check and (pInfo.plist and pInfo.time + pInfo.min_process[2] > pInfo.plist[0][1]):
             pInfo.min_process[2] -= pInfo.plist[0][1] - pInfo.time
             pInfo.time = pInfo.plist[0][1]
         else:
@@ -34,7 +36,7 @@ def PriorityP(pInfo):
             pInfo.orderOfProcesses2.append(" ")
             pInfo.orderOfProcesses3.append(pInfo.min_process[0])
         if pInfo.multi_check:
-            print("IT IS MULTICHECK PRIORITYP")
+            print("MULTILEVEL QUEUE CHECK: PriorityP")
             return
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -54,6 +56,8 @@ if __name__ == "__main__":
     #     ["P4", 3, 3, 7],
     #     ["P5", 2, 4, 2]
     # ]
+    pInfo.multi_check = False
+    pInfo.trimProcessList()
 
     PriorityP(pInfo)
 
