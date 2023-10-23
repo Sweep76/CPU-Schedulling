@@ -1,5 +1,4 @@
-from CPU_Processes import Process
-import copy
+from CPU_Processes import Process\
 
 def RoundRobin(pInfo):
     while pInfo.plist or pInfo.queue:
@@ -34,12 +33,12 @@ def RoundRobin(pInfo):
                 pInfo.processes_list[int(integer_part) - 1].append(pInfo.time)
             pInfo.timestamps.append(pInfo.time)
             if pInfo.multi_feedback_check:
-                pInfo.timestamps1.append(pInfo.time)
-                pInfo.timestamps2.append(pInfo.time)
-                pInfo.timestamps3.append(pInfo.time)
-                pInfo.orderOfProcesses1.append(" ")
-                pInfo.orderOfProcesses2.append(" ")
-                pInfo.orderOfProcesses3.append(pInfo.queue[0][0])
+                for j in range(pInfo.mlfq_levels):
+                    if j == pInfo.mlfq_levels - 1:
+                        pInfo.mlfq_orderOfProcesses[j].append(pInfo.queue[0][0])
+                    else:
+                        pInfo.mlfq_orderOfProcesses[j].append(" ")
+                    pInfo.mlfq_timestamps[j].append(pInfo.time)
                 pInfo.queue.pop(0)
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -50,7 +49,7 @@ def RoundRobin(pInfo):
 
 if __name__ == "__main__":
     pInfo = Process("Round-Robin")
-    pInfo.QT = 2 # SET THE QUANTUM TIME HERE
+    pInfo.QT = 3 # SET THE QUANTUM TIME HERE
     # Customization
     # pInfo.processes_list = [
     #     ["P1", 10, 5, 3],

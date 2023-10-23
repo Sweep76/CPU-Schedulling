@@ -1,6 +1,6 @@
 from CPU_Processes import Process
 
-def SJF(pInfo):
+def PriorityNP(pInfo):
     while pInfo.plist or pInfo.queue:
         if pInfo.multi_feedback_check and (pInfo.plist and not pInfo.queue):
             return
@@ -16,7 +16,7 @@ def SJF(pInfo):
                 else:
                     break
         if not pInfo.multi_check:
-            pInfo.min_process = min(pInfo.queue, key=lambda x: (x[2], x[1], x[0]))
+            pInfo.min_process = min(pInfo.queue, key=lambda x: (x[3], x[2], x[1], x[0]))
         pInfo.time += pInfo.min_process[2]
         pInfo.timestamps.append(pInfo.time)
         pInfo.orderOfProcesses.append(pInfo.min_process[0])
@@ -24,14 +24,14 @@ def SJF(pInfo):
         pInfo.processes_list[int(integer_part) - 1].append(pInfo.time)
         pInfo.queue.remove(pInfo.min_process)
         if pInfo.multi_feedback_check:
-            pInfo.timestamps1.append(pInfo.time)
-            pInfo.timestamps2.append(pInfo.time)
-            pInfo.timestamps3.append(pInfo.time)
-            pInfo.orderOfProcesses1.append(" ")
-            pInfo.orderOfProcesses2.append(" ")
-            pInfo.orderOfProcesses3.append(pInfo.min_process[0])
+            for j in range(pInfo.mlfq_levels):
+                if j == pInfo.mlfq_levels - 1:
+                    pInfo.mlfq_orderOfProcesses[j].append(pInfo.min_process[0])
+                else:
+                    pInfo.mlfq_orderOfProcesses[j].append(" ")
+                pInfo.mlfq_timestamps[j].append(pInfo.time)
         if pInfo.multi_check:
-            print("MULTILEVEL QUEUE CHECK: SJF")
+            print("MULTILEVEL QUEUE CHECK: PriorityNP")
             return
     if not pInfo.multi_feedback_check:
         pInfo.displayGanttChart()
@@ -41,21 +41,19 @@ def SJF(pInfo):
 
 
 if __name__ == "__main__":
-    pInfo = Process("SJF")
+    pInfo = Process("Priority-NP")
     # Customization
     # pInfo.processes_list = [
-    #     ["P1", 10, 5],
-    #     ["P2", 1, 4],
-    #     ["P3", 12, 12],
-    #     ["P4", 3, 3],
-    #     ["P5", 2, 5]
+    #     ["P1", 10, 5, 3],
+    #     ["P2", 1, 4, 1],
+    #     ["P3", 12, 12, 6],
+    #     ["P4", 3, 3, 7],
+    #     ["P5", 2, 4, 2]
     # ]
-    # algo3 already has values by default, making multi_check True, leading to errors because if multi_check is True,
-    # the program will not run line 16, so set it to False if you are not running an MLQ algorithm.
-    pInfo.multi_check = pInfo.prio_check = False
+    pInfo.multi_check = False
     pInfo.trimProcessList()
 
-    SJF(pInfo)
+    PriorityNP(pInfo)
 
 
 

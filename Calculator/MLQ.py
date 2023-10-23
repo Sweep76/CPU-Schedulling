@@ -26,7 +26,7 @@ def MLQ(pInfo):
         else:
             pInfo.min_process = min(pInfo.queue, key=lambda x: (x[3], x[2], x[1], x[0]))
             colML = 3
-        algo = pInfo.algorithms[pInfo.min_process[colML]] if not pInfo.multi_feedback_check else pInfo.algo3[pInfo.min_process[colML]]
+        algo = pInfo.algorithms[pInfo.min_process[colML]]
         if algo == "FCFS":
             FCFS(pInfo)
         elif algo == "SJF":
@@ -47,7 +47,8 @@ def MLQ(pInfo):
 
 if __name__ == "__main__":
     # SET THE ALGORITHMS HERE. FIRST ALGORITHM CORRESPONDS TO LEVEL 1, SECOND ALGORITHM TO LEVEL 2, AND SO ON
-    pInfo = Process("PriorityNP", "SRTF", "FCFS")
+    pInfo = Process("MLQ", *("PriorityNP", "SRTF", "FCFS"))
+    # pInfo = Process("MLQ", *("PriorityNP", "SRTF"))
     # Customization
     # pInfo.processes_list = [
     #     ["P1", 10, 5, 3],

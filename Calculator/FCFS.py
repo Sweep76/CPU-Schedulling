@@ -26,12 +26,12 @@ def FCFS(pInfo):
         pInfo.processes_list[int(integer_part) - 1].append(pInfo.time)
         pInfo.queue.remove(pInfo.min_process)
         if pInfo.multi_feedback_check:
-            pInfo.timestamps1.append(pInfo.time)
-            pInfo.timestamps2.append(pInfo.time)
-            pInfo.timestamps3.append(pInfo.time)
-            pInfo.orderOfProcesses1.append(" ")
-            pInfo.orderOfProcesses2.append(" ")
-            pInfo.orderOfProcesses3.append(pInfo.min_process[0])
+            for j in range(pInfo.mlfq_levels):
+                if j == pInfo.mlfq_levels - 1:
+                    pInfo.mlfq_orderOfProcesses[j].append(pInfo.min_process[0])
+                else:
+                    pInfo.mlfq_orderOfProcesses[j].append(" ")
+                pInfo.mlfq_timestamps[j].append(pInfo.time)
         if pInfo.multi_check:
             print("MULTILEVEL QUEUE CHECK: FCFS")
             return

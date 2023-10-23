@@ -1,5 +1,6 @@
 import copy
 
+
 class Process:
     # processes_list = [
     #     ["P1", 10, 5, 2],
@@ -9,13 +10,24 @@ class Process:
     #     ["P5", 15, 5, 2]
     # ]
 
-    processes_list = [
-        ["P1", 10, 5],
-        ["P2", 8, 4],
-        ["P3", 12, 4],
-        ["P4", 3, 3],
-        ["P5", 15, 5]
-    ]
+    # processes_list = [
+    #     ["P1", 5, 30, 4],
+    #     ["P2", 25, 15, 3],
+    #     ["P3", 15, 25, 1],
+    #     ["P4", 10, 10, 1],
+    #     ["P5", 20, 35, 2],
+    #     ["P6", 13, 5, 5]
+    # ]
+
+    # processes_list = [
+    #     ["P1", 10, 5],
+    #     ["P2", 8, 4],
+    #     ["P3", 12, 4],
+    #     ["P4", 3, 3],
+    #     ["P5", 15, 5]
+    # ]
+    # 10 8 12 3 15
+    # 5 4 4 3 5
 
     # processes_list = [
     #     ["P1", 10, 5, 2, 1],
@@ -63,28 +75,34 @@ class Process:
     #     ["P5", 12, 6, 1, 1]
     # ]
 
-    # processes_list = [
-    #     ["P1", 4, 12, 2, 3],
-    #     ["P2", 2, 10, 1, 1],
-    #     ["P3", 65, 3, 2, 2],
-    #     ["P4", 26, 4, 1, 2],
-    #     ["P5", 50, 6, 1, 1],
-    #     ["P6", 20, 2, 2, 3],
-    #     ["P7", 33, 5, 1, 1],
-    #     ["P8", 5, 7, 1, 2],
-    #     ["P9", 108, 2, 2, 3],
-    #     ["P10", 93, 5, 1, 3],
-    #     ["P11", 160, 7, 1, 2],
-    #     ["P12", 135, 10, 1, 1],
-    #     ["P13", 142, 7, 2, 3],
-    #     ["P14", 138, 9, 1, 3],
-    #     ["P15", 140, 7, 1, 2],
-    #     ["P16", 241, 7, 1, 2],
-    #     ["P17", 220, 10, 1, 1],
-    #     ["P18", 213, 7., 2, 1],
-    #     ["P19", 213, 6, 1, 3],
-    #     ["P20", 243, 7, 1, 2]
-    # ]
+    # processes_list = []
+
+    processes_list = [
+        ["P1", 4, 12, 2, 3],
+        ["P2", 2, 10, 1, 1],
+        ["P3", 65, 3, 2, 2],
+        ["P4", 26, 4, 1, 2],
+        ["P5", 50, 6, 1, 1],
+        ["P6", 20, 2, 2, 3],
+        ["P7", 33, 5, 1, 1],
+        ["P8", 5, 7, 1, 2],
+        ["P9", 108, 2, 2, 3],
+        ["P10", 93, 5, 1, 3],
+        ["P11", 160, 7, 1, 2],
+        ["P12", 135, 10, 1, 1],
+        ["P13", 142, 7, 2, 3],
+        ["P14", 138, 9, 1, 3],
+        ["P15", 140, 7, 1, 2],
+        ["P16", 241, 7, 1, 2],
+        ["P17", 220, 10, 1, 1],
+        ["P18", 213, 7, 2, 1],
+        ["P19", 213, 6, 1, 3],
+        ["P20", 243, 7, 1, 2],
+    ]
+    # 4 2 65 26 50 20 33 5 108 93 160 135 142 138 140 241 220 213 213 243
+    # 12 10 3 4 6 2 5 7 2 5 7 10 7 9 7 7 10 7 6 7
+    # 2 1 2 1 1 2 1 2 2 1 1 1 2 1 1 1 1 2 1 1
+    # 3 1 2 2 1 3 1 2 3 3 2 1 3 3 2 2 1 1 3 2
 
     # processes_list = [
     #     ["P1", 6, 34, 1, 2]
@@ -125,7 +143,7 @@ class Process:
     # for sublist in plist:
     #     print(sublist)
 
-    def __init__(self, *algos):
+    def __init__(self, main_algo, *algos):
         self.time = 0
         self.queue = []
 
@@ -138,20 +156,11 @@ class Process:
         self.min_process = None
 
         # for MLFQ
-        self.QT1 = None
-        self.QT2 = None
-        self.timestamps1 = [0]
-        self.timestamps2 = [0]
-        self.timestamps3 = [0]
-        self.orderOfProcesses1 = []
-        self.orderOfProcesses2 = []
-        self.orderOfProcesses3 = []
-        self.queue1 = []
-        self.queue2 = []
-        self.queue3 = []
-        # self.algo3 = {1: "PriorityP", 2: "SRTF", 3: "FCFS"}
-        # self.algo3 = {1: "RoundRobin"}
-        # self.algo3 = {}
+        self.mlfq_qt = []
+        self.mlfq_levels = None
+        self.mlfq_queues = []
+        self.mlfq_timestamps = []
+        self.mlfq_orderOfProcesses = []
 
         self.prio_check = False
         self.multi_check = False
@@ -160,35 +169,47 @@ class Process:
         self.plist = []
 
         # if len(algos) > 1 or len(self.algo3) > 1:
-        if len(algos) > 1 or len(self.algo3) > 1:
+        if main_algo == "MLFQ":
+            self.multi_feedback_check = True
+        if "Priority" in main_algo:
+            self.prio_check = True
+        if main_algo == "MLQ":
             self.multi_check = True
         for idx, algo in enumerate(algos):
             self.algorithms[idx + 1] = algo
             if not self.prio_check and "Priority" in algo:
                 self.prio_check = True
-            if not self.multi_feedback_check and "MLFQ" in algo:
-                self.multi_feedback_check = True
-        for algo in self.algo3.values():
-            if not self.prio_check and "Priority" in algo:
-                self.prio_check = True
-                break
+            # if not self.multi_feedback_check and "MLFQ" in algo:
+            #     self.multi_feedback_check = True
+        # for algo in self.algo3.values():
+        #     if not self.prio_check and "Priority" in algo:
+        #         self.prio_check = True
+        #         break
         # print(self.prio_check)
         # print(f"colET: {self.colET}")
         # print(f"colTAT: {self.colTAT}")
 
+    def trimProcessList(self):
         # create a copy of processes_list to retain the original value of the given processes data.
         # otherwise, using processes_list in priority algorithms will alter the burst time of the processes,
         # so we create plist, a copy of processes list.
         if self.multi_check and self.prio_check:
-            self.plist = sorted(copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[4], x[3], x[2], x[0]))
+            self.plist = sorted(
+                copy.deepcopy(self.processes_list),
+                key=lambda x: (x[1], x[4], x[3], x[2], x[0]),
+            )
         elif self.multi_check or self.prio_check:
-            self.plist = sorted(copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[3], x[2], x[0]))
+            self.plist = sorted(
+                copy.deepcopy(self.processes_list),
+                key=lambda x: (x[1], x[3], x[2], x[0]),
+            )
         else:
-            self.plist = sorted(copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[2], x[0]))
+            self.plist = sorted(
+                copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[2], x[0])
+            )
         # for i in self.plist:
         #     print(i)
 
-    def trimProcessList(self):
         if not self.prio_check and not self.multi_check:
             self.processes_list = [sublist[:3] for sublist in self.processes_list]
             self.colET = 3
@@ -215,9 +236,13 @@ class Process:
         print()
         for i in range(len(self.processes_list)):
             # Calculating turnaround time
-            self.processes_list[i].append(self.processes_list[i][self.colET] - self.processes_list[i][1])
+            self.processes_list[i].append(
+                self.processes_list[i][self.colET] - self.processes_list[i][1]
+            )
             # Calculating waiting time
-            self.processes_list[i].append(self.processes_list[i][self.colTAT] - self.processes_list[i][2])
+            self.processes_list[i].append(
+                self.processes_list[i][self.colTAT] - self.processes_list[i][2]
+            )
 
     def displayTable(self):
         print()
@@ -262,37 +287,16 @@ class Process:
             print(sublist)
 
     # for MLFQ
-    def displayGanttChart1(self):
-        print()
-        print(f"Gantt Chart 1 (Time Slice = {self.QT1}):")
-        print("| ", end="")
-        for i in self.orderOfProcesses1:
-            print(f"{i: >5} | ", end="")
-        print()
-        for i in self.timestamps1:
-            print(f"{i: <8}", end="")
-
-    def displayGanttChart2(self):
-        print()
-        print(f"Gantt Chart 2 (Time Slice = {self.QT2}):")
-        print("| ", end="")
-        for i in self.orderOfProcesses2:
-            print(f"{i: >5} | ", end="")
-        print()
-        for i in self.timestamps2:
-            print(f"{i: <8}", end="")
-
-    def displayGanttChart3(self):
-        print()
-        print(f"Gantt Chart 3 (Algorithm/s = {self.algo3}):")
-        print("| ", end="")
-        for i in self.orderOfProcesses3:
-            print(f"{i: >5} | ", end="")
-        print()
-        for i in self.timestamps3:
-            print(f"{i: <8}", end="")
-
-
-
-
-
+    def displayMLFQGanttCharts(self):
+        for i in range(self.mlfq_levels):
+            print()
+            if i == self.mlfq_levels - 1:
+                print(f"Gantt Chart {i + 1} (Algorithm/s = {self.algorithms}):")
+            else:
+                print(f"Gantt Chart {i + 1} (Time Slice = {self.mlfq_qt[i]}):")
+            print("| ", end="")
+            for j in self.mlfq_orderOfProcesses[i]:
+                print(f"{j: >5} | ", end="")
+            print()
+            for j in self.mlfq_timestamps[i]:
+                print(f"{j: <8}", end="")
