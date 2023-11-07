@@ -50,6 +50,8 @@ def handle_user_input():
     mlq_algorithms = data.get("mlq_algorithms") or []
     level = data.get("level") or None
 
+    print(priority)
+
     AT = [int(x) for x in arrival_time.split()]
     BT = [int(x) for x in burst_time.split()]
     P = [int(x) for x in priority.split()] if priority else None
@@ -60,15 +62,22 @@ def handle_user_input():
         [
             f"P{i + 1}",
             AT[i] if i < len(AT) else 0,
-            BT[i] if i < len(BT) else 0,
-            P[i] if P and i < len(P) else 1,
-            L[i] if L and i < len(L) else 1,
+            BT[i] if i < len(BT) else 0
         ]
         for i in range(len(BT))
     ]
 
+    if P:
+        for i in range(len(processes_list)):
+            processes_list[i].append(P[i]);
+    if L:
+        for i in range(len(processes_list)):
+            processes_list[i].append(L[i]);
+
+
+    print(processes_list)
+
     if main_algorithm == "FCFS":
-        print("kweeennn")
         pInfo = Process("FCFS")
         pInfo.processes_list = processes_list
         pInfo.multi_check = pInfo.prio_check = False
@@ -148,6 +157,7 @@ def handle_user_input():
         pInfo8.QT = int(quantum_time) if quantum_time else None
         pInfo8.mlfq_qt = mlfq_qt
         pInfo8.mlfq_levels = len(mlfq_qt) + 1
+        # print(pInfo8.processes_list)
         pInfo8.trimProcessList()
         print("\n\nMLFQ:")
         MLFQ(pInfo8)

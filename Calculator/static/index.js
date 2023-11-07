@@ -206,7 +206,6 @@ function updateMLQLevelLabel() {
   });
 }
 
-
 function toggleElements() {
   priority.classList.toggle("d-none", !isPriority);
   mlq_algo_divs.forEach((mlq_algo_div) => {
@@ -265,6 +264,8 @@ let globalFormData = {};
 user_input_form.addEventListener("submit", async (e) => {
   e.preventDefault();
 
+  let bt_length;
+
   let isValid = /^(\d+|0|\s)+$/;
   let toNumbers = /\b(?:0|[1-9]\d*)\b/g;
   let AT = document.querySelector("#arrival_time").value;
@@ -275,8 +276,10 @@ user_input_form.addEventListener("submit", async (e) => {
     let arrival_time = numbers1.map(Number);
     let burst_time = numbers2.map(Number);
 
-    if (arrival_time.length !== burst_time.length) {
-      alert("Arrival time and burst time Lengths should be the same");
+    bt_length = burst_time.length;
+
+    if (arrival_time.length !== bt_length) {
+      alert("Arrival time and burst time lengths should be the same");
       return;
     }
   } else {
@@ -288,6 +291,14 @@ user_input_form.addEventListener("submit", async (e) => {
     let P = document.querySelector("#priorityInput").value;
     if (!isValid.test(P)) {
       alert("Invalid input in Priority field.");
+      return;
+    }
+    let PNumbers = P.match(toNumbers);
+    let priority = PNumbers.map(Number);
+
+    if (priority.length !== bt_length) {
+      alert("Priority and burst time lengths should be the same");
+      console.log(priority.length, burst_time.length);
       return;
     }
   }
@@ -305,6 +316,11 @@ user_input_form.addEventListener("submit", async (e) => {
     } else {
       let numbers = L.match(toNumbers);
       let levels = numbers.map(Number);
+
+      if (levels.length !== bt_length) {
+        alert("Level and burst time lengths should be the same");
+        return;
+      }
 
       if (Math.max(...levels) > mlqAlgorithmValues.length) {
         alert(

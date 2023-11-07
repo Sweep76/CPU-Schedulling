@@ -8,10 +8,14 @@ from SRTF import SRTF
 from MLQ import MLQ
 
 def MLFQ(pInfo):
+    # initializing queues, timestamps, and orderOfProcesses 
     pInfo.mlfq_queues = [[] for _ in range(pInfo.mlfq_levels)]
     pInfo.mlfq_timestamps = [[0] for _ in range(pInfo.mlfq_levels)]
     pInfo.mlfq_orderOfProcesses = [[] for _ in range(pInfo.mlfq_levels)]
     queues = False
+
+    # print(pInfo.processes_list)
+
     while pInfo.plist or queues:
         if pInfo.plist:
             if not queues and pInfo.plist[0][1] > pInfo.time:

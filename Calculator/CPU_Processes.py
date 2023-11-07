@@ -173,7 +173,7 @@ class Process:
             self.multi_feedback_check = True
         if "Priority" in main_algo:
             self.prio_check = True
-        if main_algo == "MLQ":
+        if main_algo == "MLQ" or len(algos) > 1:
             self.multi_check = True
         for idx, algo in enumerate(algos):
             self.algorithms[idx + 1] = algo
@@ -222,6 +222,7 @@ class Process:
             self.processes_list = [sublist[:4] for sublist in self.processes_list]
             self.colET = 4
             self.colTAT = 5
+        # print(f"This is colET: {self.colET} and colTAT: {self.colTAT} ")
 
     def displayGanttChart(self):
         print("Gantt Chart:")
