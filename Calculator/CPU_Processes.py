@@ -144,6 +144,7 @@ class Process:
     #     print(sublist)
 
     def __init__(self, main_algo, *algos):
+        self.fcfs = main_algo == "FCFS"
         self.time = 0
         self.queue = []
 
@@ -204,9 +205,14 @@ class Process:
                 key=lambda x: (x[1], x[3], x[2], x[0]),
             )
         else:
-            self.plist = sorted(
-                copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[2], x[0])
-            )
+            if self.fcfs:
+                self.plist = sorted(
+                    copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[0], x[2])
+                )
+            else:
+                self.plist = sorted(
+                    copy.deepcopy(self.processes_list), key=lambda x: (x[1], x[2], x[0])
+                )
         # for i in self.plist:
         #     print(i)
 
