@@ -576,3 +576,9 @@ function displayEfficiency(processesList) {
   efficiencyDiv.append(aveWTSpan);
   results_container.append(efficiencyDiv);
 }
+
+document
+  .querySelector("#page_replacement_btn")
+  .addEventListener("click", () => {
+    window.location.href = "/pageReplacement";
+  });

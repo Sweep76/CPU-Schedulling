@@ -8,6 +8,7 @@ from RoundRobin import RoundRobin
 from SRTF import SRTF
 from MLQ import MLQ
 from MLFQ import MLFQ
+from PageReplacement import PageReplacement
 
 # from views import views
 
@@ -15,13 +16,7 @@ from MLFQ import MLFQ
 # app.register_blueprint(views, url_prefix="/views")
 
 
-# if __name__ == "__main__":
-#     app.run(debug=True)  # port is optional
-
 app = Flask(__name__)
-
-# if __name__ == "__main__":
-#     app.run(debug=True)  # port is optional
 
 
 @app.route("/")
@@ -29,9 +24,9 @@ def userInput():
     return render_template("userInput.html")
 
 
-# @app.route("/userInput")
-# def userInput():
-#     return render_template("userInput.html")
+@app.route("/pageReplacement")
+def pageReplacement():
+    return render_template("pageReplacement.html")
 
 
 @app.route("/sendInput", methods=["POST"])
@@ -59,21 +54,16 @@ def handle_user_input():
 
     # Construct the processes_list
     processes_list = [
-        [
-            f"P{i + 1}",
-            AT[i] if i < len(AT) else 0,
-            BT[i] if i < len(BT) else 0
-        ]
+        [f"P{i + 1}", AT[i] if i < len(AT) else 0, BT[i] if i < len(BT) else 0]
         for i in range(len(BT))
     ]
 
     if P:
         for i in range(len(processes_list)):
-            processes_list[i].append(P[i]);
+            processes_list[i].append(P[i])
     if L:
         for i in range(len(processes_list)):
-            processes_list[i].append(L[i]);
-
+            processes_list[i].append(L[i])
 
     print(processes_list)
 
@@ -161,16 +151,34 @@ def handle_user_input():
         pInfo8.trimProcessList()
         print("\n\nMLFQ:")
         MLFQ(pInfo8)
-        return jsonify(
-            data=[
-                pInfo8.timestamps,
-                pInfo8.orderOfProcesses,
-                pInfo8.processes_list,
-                pInfo8.mlfq_timestamps,
-                pInfo8.mlfq_orderOfProcesses,
-            ]
+        return (
+            jsonify(
+                data=[
+                    pInfo8.timestamps,
+                    pInfo8.orderOfProcesses,
+                    pInfo8.processes_list,
+                    pInfo8.mlfq_timestamps,
+                    pInfo8.mlfq_orderOfProcesses,
+                ]
+            ),
         )
 
 
+@app.route("/sendInputPageReplacement", methods=["POST"])
+def handle_user_input_page_replacement():
+    inputData = request.get_json()
+    pageReplacementAlgorithm = inputData.get("pageReplacementAlgorithm")
+    pageReferences = inputData.get("pageReferences")
+    numberOfFrames = inputData.get("numberOfFrames")
+        
+    returnedData = PageReplacement(
+        pageReplacementAlgorithm, pageReferences, numberOfFrames
+    )
+
+    return jsonify(returnedData)
+
+    # return jsonify(inputData, framesSimulated, results)
+
+
 if __name__ == "__main__":
-    app.run()
+    app.run(debug=True)
